@@ -1,7 +1,8 @@
 function fetchData() {
 	let city = document.getElementById('city').value;
+	let backend = document.getElementById('backend').value;
 	(async () => {
-		let data = await sendRequest(city);
+		let data = await sendRequest(city, backend);
 		editHTML(data);
 	})();
 }
@@ -14,8 +15,12 @@ function editHTML(data) {
 		Min: ${Math.round(data.main.temp_min) / 10.0 }°C &ensp; Max: ${Math.round(data.main.temp_max) / 10.0}°C<br>
 		Humidity: ${data.main.humidity}%<br>`;
 }
-async function sendRequest(city) {
-	const APIURL = 'http://localhost:8081/api';
+async function sendRequest(city, backend) {
+	let port = 8080;
+	if (backend == "node") { port = 8081; }
+	if (backend == "go") { port = 8082;}
+
+	const APIURL = `http://localhost:${port}/api`;
 	const cityData = { name: city};
 
 	let response = await fetch(APIURL, {
