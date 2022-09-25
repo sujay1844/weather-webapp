@@ -6,7 +6,7 @@ This project uses Openweathermap API.
 
 I could have made it look prettier, added animations or more functionality. But you can't learn multiple things at once.
 
-Feature added: Separate frontend and backend
+It uses a separate front-end and back-end. It supports two back-ends namely, NodeJS and Golang. You can choose which back-end to use in the homepage.
 
 # Running it
 
