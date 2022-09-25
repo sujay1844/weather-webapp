@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<title>About</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="css/style.css" rel="stylesheet">
+		<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+	</head>
+   <body>
+		<a href="index.html">
+			<button id="home">Home</button>
+		</a>
+		<button id="darkMode" onclick="toggleDarkMode()">
+			<img id="darkModeIMG" src="images/night-mode.png" alt="Dark mode">
+		</button>
+      <h1 id="a-simple-weather-app">A simple weather app</h1>
+      <p>I built a simple weather app to get a deeper understanding of
+         front-end development and APIs.<br>
+      This project uses Openweathermap API.<br>
+      I could have made it look prettier, added animations or more functionality. But you can&#39;t learn multiple things
+         at once.</p>
+      <h1 id="running-it">Running it</h1>
+      <ul>
+         <li>You can open up the <code>index.html</code> in a web browser.</li>
+         <li>Or you can run <code>docker compose up -d</code> and go to <code>localhost:8080</code> in a web browser (recommended).
+         </li>
+      </ul>
+		<script src="src/darkmode.js"></script>
+   </body>
+</html>

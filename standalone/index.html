@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Weather</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="css/style.css" rel="stylesheet">
+		<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+	</head>
+	<body>
+		<a href="about.html">
+			<button id="about">About</button>
+		</a>
+		<button id="darkMode" onclick="toggleDarkMode()">
+			<img id="darkModeIMG" src="images/night-mode.png" alt="Dark mode">
+		</button>
+		<div class="input">
+			<img id="icon" src="images/weather.png" alt="Weather icon">
+			<input type="text" name="city" list="cities" id="city"
+				placeholder="Enter your city"/><br>
+			<button id="submit" type="submit" onclick="fetchData()">Submit</button><br>
+		</div>
+		<p id="weather-data"></p>
+		<script src="src/textbox.js"></script>
+		<script src="src/darkmode.js"></script>
+		<script src="src/app.js"></script>
+	</body>
+</html>
