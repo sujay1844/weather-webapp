@@ -13,13 +13,23 @@ function fetchData() {
 }
 
 function editHTML(data) {
+	let html;
+	try {
+		html = ` ${data.name} (${data.sys.country}):&ensp;${data.weather[0].description}<br>
+			Temp: ${Math.round(data.main.temp) / 10.0}°C<br>
+			Feels like: ${Math.round(data.main.feels_like) / 10.0}°C<br>
+			Min: ${Math.round(data.main.temp_min) / 10.0 }°C &ensp; Max: ${Math.round(data.main.temp_max) / 10.0}°C<br>
+			Humidity: ${data.main.humidity}%<br>`;
+	}
+	catch(err) {
+		if(data.hasOwnProperty('message')) {
+			html = data.message;
+		} else {
+			html = `An error occured.\n Error message: ${err}`;
+		}
+	}
 	// Edit the HTML to display the weather
-	document.getElementById("weather-data").innerHTML = `
-		${data.name} (${data.sys.country}):&ensp;${data.weather[0].description}<br>
-		Temp: ${Math.round(data.main.temp) / 10.0}°C<br>
-		Feels like: ${Math.round(data.main.feels_like) / 10.0}°C<br>
-		Min: ${Math.round(data.main.temp_min) / 10.0 }°C &ensp; Max: ${Math.round(data.main.temp_max) / 10.0}°C<br>
-		Humidity: ${data.main.humidity}%<br>`;
+	document.getElementById("weather-data").innerHTML = html;
 }
 
 async function sendRequest(city, backend) {
@@ -32,8 +42,13 @@ async function sendRequest(city, backend) {
 		}
 	})
 	.then(res => res.data)
-	.then(data => editHTML(data));
+	.then(data => editHTML(data))
+	// .catch(err => cityNotFound(city, err));
 }
+
+// function cityNotFound(city) {
+// 	document.getElementById("weather-data").innerHTML = 
+// }
 
 function getAPIURL(backend, local) {
 	if (backend == "node") {
