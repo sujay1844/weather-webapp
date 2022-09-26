@@ -1,22 +1,24 @@
 import fetch from 'node-fetch';
 import express from 'express';
+import cors from 'cors';
 const app = express();
-const PORT = 8081;
+const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
+app.use(cors());
 app.listen(
 	PORT,
 	() => console.log(`app running on http://localhost:${PORT}`)
 );
 
 // Test API
-app.get('/text', (req, res) => {
+app.get('/ping',  (req, res) => {
 	res.status(200).send({
-		foo: 'bar'
+		message: 'pong'
 	});
 });
 
-app.post('/api', (req, res) => {
+app.post('/api',  (req, res) => {
 	const { name } = req.body;
 
 	// Name cannot be empty

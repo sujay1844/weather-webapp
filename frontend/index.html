@@ -8,21 +8,38 @@
 		<link rel="icon" type="image/x-icon" href="images/favicon.ico">
 	</head>
 	<body>
-		<a href="about.html">
-			<button id="about">About</button>
-		</a>
-		<button id="darkMode" onclick="toggleDarkMode()">
-			<img id="darkModeIMG" src="images/night-mode.png" alt="Dark mode">
-		</button>
+		<nav>
+			<ul>
+				<li>
+					<a href="about.html">
+						<button id="about">About</button>
+					</a>
+				</li>
+				<li>
+					<div class="dropdown">
+						<button id="dropbtn">Backend ▾</button>
+						<div class="dropdown-content">
+						<button id="node" onclick="setBackend('node')">node</button>
+						<button id="go" onclick="setBackend('go')">go</button>
+						</div>
+					</div>
+				</li>
+				<li>
+					<button id="darkMode" onclick="toggleDarkMode()">
+						<img id="darkModeIMG"
+							src="images/night-mode.png"
+							alt="Dark mode">
+					</button>
+				</li>
+			</ul>
+		</nav>
 		<div class="input">
 			<img id="icon" src="images/weather.png" alt="Weather icon">
-			<input type="text" name="city" list="cities" id="city"
+			<input type="text" id="city"
 				placeholder="Enter your city"/><br>
-			<input type="text" name="backend" list="backends" id="backend"
-				placeholder="Enter backend (node/go)"/><br>
 			<button id="submit" type="submit" onclick="fetchData()">Submit</button><br>
+			<div id="weather-data"></div>
 		</div>
-		<p id="weather-data"></p>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 		<script src="src/textbox.js"></script>
 		<script src="src/darkmode.js"></script>

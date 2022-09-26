@@ -1,11 +1,17 @@
+const LOCAL = 0;
+
 function fetchData() {
 	let city = document.getElementById('city').value;
-	let backend = document.getElementById('backend').value;
-	(async () => {
-		let data = await sendRequest(city, backend);
-		editHTML(data);
-	})();
+	let backend = getBackend();
+
+	document.getElementById("weather-data").innerHTML = `Backend: ${backend}<br>Fetching data...`
+	document.getElementById("weather-data").innerHTML = `<img id="buffer" 
+		src="images/buffer.gif" 
+		alt="Fetching data...<br>Backend: ${backend}">
+		<br>Backend: ${backend}`;
+	sendRequest(city, backend);
 }
+
 function editHTML(data) {
 	// Edit the HTML to display the weather
 	document.getElementById("weather-data").innerHTML = `
@@ -15,22 +21,70 @@ function editHTML(data) {
 		Min: ${Math.round(data.main.temp_min) / 10.0 }°C &ensp; Max: ${Math.round(data.main.temp_max) / 10.0}°C<br>
 		Humidity: ${data.main.humidity}%<br>`;
 }
+
 async function sendRequest(city, backend) {
-	let port = 8080;
-	if (backend == "node") { port = 8081; }
-	if (backend == "go") { port = 8082;}
-
-	const APIURL = `http://localhost:${port}/api`;
-	const cityData = { name: city};
-
-	let response = await fetch(APIURL, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json; charset=UTF-8"
-		},
-		body: JSON.stringify(cityData),
+	let APIURL = getAPIURL(backend, LOCAL);
+	axios({
+		method: 'post',
+		url: APIURL,
+		data: {
+			name: city
+		}
 	})
-	.catch(err => console.log(err));
-	let data = await response.json();
-	return data;
+	.then(res => res.data)
+	.then(data => editHTML(data));
+}
+
+function getAPIURL(backend, local) {
+	if (backend == "node") {
+		if (local == 0) {
+			return "https://weather-webapp-backend-node.herokuapp.com/api"
+		} else {
+			return "http://localhost:5000/api"
+		}
+	}
+	else if (backend == "go") {
+		if (local == 0) {
+			return "https://weather-webapp-backend-go.herokuapp.com/api"
+		} else {
+			return "http://localhost:3000/api"
+		}
+	} else {
+		if (local == 0) {
+			return "https://weather-webapp-backend-go.herokuapp.com/api"
+		} else {
+			return "http://localhost:3000/api"
+		}
+	}
+}
+
+function setBackend(backend) {
+	document.cookie = `backend=${backend}`;
+}
+
+function getBackend() {
+	let cookieData = document.cookie.split(';');
+	try {
+		// Finds the index of the backend data in the cookie
+		let index = -1;
+		for (let i = 0; i < cookieData.length; i++) {
+			if (cookieData[i].includes("backend")) {
+				index = i;
+				break;
+			} else {
+				index = -1;
+			}
+		}
+		if (index != -1) {
+			let backend = cookieData[index].trim().substring(8).trim();
+			return backend;
+		} else {
+			throw "Backend not selected";
+		}
+	}
+	catch(err) {
+		console.log("Backend not selected. Using go(default). Error: "+err)
+		setBackend("go");
+		return "go";
+	}
 }

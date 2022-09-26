@@ -4,6 +4,7 @@ function toggleDarkMode() {
 	element.classList.toggle("dark-mode");
 	setDarkMode('submit');
 	setDarkMode('about');
+	setDarkMode('dropbtn');
 	setDarkMode('darkMode');
 }
 function setDarkMode(buttonName) {

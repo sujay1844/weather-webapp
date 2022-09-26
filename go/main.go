@@ -4,21 +4,30 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
 	// We set Gin to release mode to remove debug messages
-	gin.SetMode(gin.DebugMode)
-	// gin.SetMode(gin.ReleaseMode)
+	// gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
 
-	r := gin.Default()
+	router := gin.Default()
 
-	r.GET("/ping", pong)
-	r.POST("/api", getWeather)
+	// Using CORS middleware
+	router.Use(cors.Default())
 
-	r.Run("0.0.0.0:8082")
+	router.GET("/ping", pong)
+	router.POST("/api", getWeather)
+
+	router.Run(":" + port)
 }
 
 func pong(c *gin.Context) {
@@ -44,7 +53,7 @@ func getWeather(c *gin.Context) {
 	json.Unmarshal([]byte(weatherData), &jsonMap)
 
 	// Send back 200 status and the mapped json data
-	c.IndentedJSON(http.StatusOK, jsonMap)
+	c.JSON(http.StatusOK, jsonMap)
 }
 
 func fetchWeather(city string) (string){

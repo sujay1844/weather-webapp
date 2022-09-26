@@ -8,28 +8,20 @@
 	</head>
 	<body>
 		<a href="index.html">
-			<button id="home">Home</button>
+			<button id="home">Go to Homepage</button>
 		</a>
 		<button id="darkMode" onclick="toggleDarkMode()">
 			<img id="darkModeIMG" src="images/night-mode.png" alt="Dark mode">
 		</button>
 		<h1 id="a-simple-weather-app">A simple weather app</h1>
-		<p>I built a simple weather app to get a deeper understanding of
+		<p>
+			I built a simple weather app to get a deeper understanding of
 			front-end development and APIs.<br>
-				This project uses Openweathermap API.<br>
-				I could have made it look prettier, added animations or more functionality. But you can&#39;t learn multiple things
-			at once.<br>
-				Feature added: Seperate frontend and backend
-		</p>
-		<h1 id="running-it">Running it</h1>
-		<ul>
-			<li>
-				Run <code>docker compose up -d</code> and go to <code>localhost:8080</code> in a web browser.
-			</li>
-			<li>
-				You can also run the standalone version without seperate backend. Open up the <code>standalone/index.html</code> in your web browser.
-			</li>
-		</ul>
+				This project uses Openweathermap API.<br><br>
+				I could have made it look prettier, added animations or more functionality. But you can&#39;t learn multiple things at once.<br><br>
+			It has two backends: node and go.<br>
+				I couldn't decide on a language for backend, so I tried out both NodeJS and Golang.<br><br>
+			This app is deployed on <a href="https://heroku.com" target="_blank">Heroku</a>. It is free until November 28th, 2022. Uptime after that is uncertain.
 		<script src="src/darkmode.js"></script>
 	</body>
 </html>
