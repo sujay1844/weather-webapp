@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import express from 'express';
 import cors from 'cors';
+import * as dotenv from 'dotenv';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -29,11 +30,16 @@ app.post('/api',  (req, res) => {
 	})();
 });
 async function fetchData(city) {
-	// This API key can handle one request every second
-	const APIKey = "8ce3cf9a578c63f103908752ed6733df";
+	let APIKey = getAPIKey()
 
 	let response = await fetch( `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKey}`);
 	let data = await response.json();
 
 	return data;
+}
+
+function getAPIKey() {
+	dotenv.config()
+	let APIKEY = process.env.APIKEY;
+	return APIKEY;
 }

@@ -3,11 +3,13 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -58,7 +60,7 @@ func getWeather(c *gin.Context) {
 
 func fetchWeather(city string) (string){
 	// My API key works upto one request per second
-	const APIKey = "8ce3cf9a578c63f103908752ed6733df"
+	APIKey := getAPIKey()
 
 	url := "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey
 
@@ -67,4 +69,12 @@ func fetchWeather(city string) (string){
 	// Extract the body and return it
 	body, _ := ioutil.ReadAll(req.Body)
 	return string(body)
+}
+
+func getAPIKey() (string) {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file: %s", err)
+	}
+	return os.Getenv("APIKEY")
 }

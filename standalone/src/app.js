@@ -1,6 +1,6 @@
 function fetchData() {
-	// This API key can handle one request every second
-	const APIKey = "8ce3cf9a578c63f103908752ed6733df";
+	// Go to openweathermap and create a free account for an API key.
+	const APIKey = "";
 
 	// fetch city name from input
 	let city = document.getElementById('city').value;
