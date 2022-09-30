@@ -46,10 +46,6 @@ async function sendRequest(city, backend) {
 	// .catch(err => cityNotFound(city, err));
 }
 
-// function cityNotFound(city) {
-// 	document.getElementById("weather-data").innerHTML = 
-// }
-
 function getAPIURL(backend, local) {
 	if (backend == "node") {
 		if (local == 0) {
