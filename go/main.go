@@ -9,6 +9,8 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/RediSearch/redisearch-go/redisearch"
+	"github.com/gomodule/redigo/redis"
 	"github.com/joho/godotenv"
 )
 
@@ -18,8 +20,8 @@ func main() {
 		port = "3000"
 	}
 	// We set Gin to release mode to remove debug messages
-	// gin.SetMode(gin.DebugMode)
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.DebugMode)
+	// gin.SetMode(gin.ReleaseMode)
 
 	router := gin.Default()
 
@@ -27,8 +29,8 @@ func main() {
 	router.Use(cors.Default())
 
 	router.GET("/ping", pong)
-	router.POST("/api", getWeather)
-
+	router.GET("/weather/get/:city", getWeather)
+	router.GET("/weather/search/:search_term", getSearchResults)
 	router.Run(":" + port)
 }
 
@@ -43,11 +45,9 @@ type CityData struct {
 }
 
 func getWeather(c *gin.Context) {
-	// Bind the received json to a struct to process data
-	var jsonData CityData
-	c.BindJSON(&jsonData)
+	city := c.Param("city")
 
-	weatherData := fetchWeather(jsonData.City)
+	weatherData := fetchWeather(city)
 
 	// Since golang doesn't handle json well by Default
 	// We map it using the encoding/json library
@@ -77,4 +77,48 @@ func getAPIKey() (string) {
 		log.Fatalf("Error loading .env file: %s", err)
 	}
 	return os.Getenv("APIKEY")
+}
+
+func getSearchResults(c *gin.Context) {
+	search_term := c.Param("search_term")
+	log.Println(search_term)
+	cities := search(search_term, 10)
+	c.JSON(http.StatusOK, cities)
+}
+
+type City struct {
+	Name	string	`json:"name"`
+	Country string	`json:"country"`
+	// State	string	`json:"state"`
+	// Coord	Coord	`json:"coord"`
+}
+// type Coord struct {
+// 	Lon float64 `json:"lon"`
+// 	Lat float64 `json:"lat"`
+// }
+
+func search(search_term string, no_of_results int) []City {
+	err := godotenv.Load()
+	url := os.Getenv("URL")
+	password := os.Getenv("PASSWORD")
+	pool := &redis.Pool{
+		Dial: func() (redis.Conn, error) {
+			return redis.Dial("tcp", url, redis.DialPassword(password))
+		},
+	}
+	c := redisearch.NewClientFromPool(pool, "cities")
+	docs, _, err := c.Search(redisearch.NewQuery(search_term).Limit(0, no_of_results).SetScorer("TFIDF.DOCNORM"))
+	if err != nil {
+		log.Println(err)
+	}
+	cities := make([]City, 0)
+	for i := 0; i < len(docs); i++ {
+		var city City
+		err = json.Unmarshal([]byte(docs[i].Properties["$"].(string)), &city)
+		if err != nil {
+			log.Println(err)
+		}
+		cities = append(cities, city)
+	}
+	return cities
 }

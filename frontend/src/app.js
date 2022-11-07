@@ -1,4 +1,4 @@
-const LOCAL = 0;
+const REMOTE = 0;
 
 function fetchData() {
 	let city = document.getElementById('city').value;
@@ -33,38 +33,35 @@ function editHTML(data) {
 }
 
 async function sendRequest(city, backend) {
-	let APIURL = getAPIURL(backend, LOCAL);
+	let APIURL = getAPIURL(backend, REMOTE);
 	axios({
-		method: 'post',
-		url: APIURL,
-		data: {
-			name: city
-		}
+		method: 'get',
+		url: APIURL + "/get/" + city,
 	})
 	.then(res => res.data)
 	.then(data => editHTML(data))
 	// .catch(err => cityNotFound(city, err));
 }
 
-function getAPIURL(backend, local) {
+function getAPIURL(backend, remote) {
 	if (backend == "node") {
-		if (local == 0) {
+		if (remote == 0) {
 			return "https://weather-webapp-backend-node.herokuapp.com/api"
 		} else {
 			return "http://localhost:5000/api"
 		}
 	}
 	else if (backend == "go") {
-		if (local == 0) {
-			return "https://weather-webapp-backend-go.herokuapp.com/api"
+		if (remote == 0) {
+			return "https://weather-webapp-backend-go.herokuapp.com/weather"
 		} else {
-			return "http://localhost:3000/api"
+			return "http://localhost:3000/weather"
 		}
 	} else {
-		if (local == 0) {
-			return "https://weather-webapp-backend-go.herokuapp.com/api"
+		if (remote == 0) {
+			return "https://weather-webapp-backend-go.herokuapp.com/weather"
 		} else {
-			return "http://localhost:3000/api"
+			return "http://localhost:3000/weather"
 		}
 	}
 }
@@ -98,4 +95,35 @@ function getBackend() {
 		setBackend("go");
 		return "go";
 	}
+}
+
+// Pressing enter in a textbox doesn't do anything by default.
+// Here a button click is simulated when enter is pressed.
+document.addEventListener("DOMContentLoaded", function(){
+	document.getElementById("city").addEventListener("keypress", (event) => {
+		if (event.key == "Enter") {
+			document.getElementById("submit").click();
+		}
+	});
+	document.getElementById("city").addEventListener("keyup", (event) => {
+		let city = document.getElementById('city').value;
+		sendSearchData(city, getBackend());
+	})
+});
+async function sendSearchData(city, backend) {
+	let APIURL = getAPIURL(backend, REMOTE);
+	axios({
+		method: 'get',
+		url: APIURL + "/search/" + city,
+	})
+	.then(res => res.data)
+	.then(data => dropdown(data))
+}
+function dropdown(data) {
+	let html = "";
+	for (i =0; i< data.length; i++) {
+		html += `${data[i].name}, ${data[i].country} <br>`;
+	}
+
+	document.getElementById("weather-data").innerHTML = html;
 }
